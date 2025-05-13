@@ -1,0 +1,35 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  become: true
+  tasks: 
+
+  - name: create simon user
+    tags: always
+    user: 
+      name: simon
+      groups: root   
+ 
+  - name: add ssh key for simon
+    tags: always
+    authorized_key:
+      user: simon
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE2AIDp/OjN+c8q2clCsnvaPeXfW60oS94uh91gWKg4Y ansible"
+
+  - name: add sudoers file for simon
+    tags: always
+    copy: 
+      src: sudoer_simon
+      dest: /etc/sudoers.d/simone
+      owner: root

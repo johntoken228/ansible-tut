@@ -7,19 +7,9 @@
   - name: install updates
     tags: always
     apt:
+      upgrade: dist
       update_cache: yes
-    changed_when: false
     when: ansible_distribution == "Ubuntu"
-
-- hosts: all
-  become: true
-  tasks: 
-
-  - name: add ssh key for simon
-    tags: always
-    authorized_key:
-      user: simon
-      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE2AIDp/OjN+c8q2clCsnvaPeXfW60oS94uh91gWKg4Y ansible"
 
 - hosts: all
   become: true
@@ -51,6 +41,16 @@
         - libapache2-mod-php
       state: latest
       update_cache: yes
+# for CentOS nedd to be started after loading manualy
+# so we need to write script for autom start
+#
+#  - name: start httpd
+#    tags: apache
+#    services:
+#      name: httpd
+#      state: started
+#    when: ansible_distribution == "CentOS"
+
 
   - name: copy default html file for site
     tags: apache2
